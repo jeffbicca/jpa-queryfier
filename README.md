@@ -47,7 +47,7 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
    return new JpaQueryfier(sql, em).with(new QueryParameter("name", name))
                                     .and(new QueryParameter("minAge", minimumAge))
                                     .and(new QueryParameter("maxAge", maximumAge))
-            .queryfy().getResultList();
+               .queryfy().getResultList();
 }
 
 
@@ -85,4 +85,4 @@ TO DO and limitations
 
 Help Improve and Get Involved
 ---------------------------------------
-I don't consider myself an amazing coder. So if you have increments, corrections, polishments, criticism, method rename, refactoring, documentation or whatever kind of contributions, please submit them via a [Pull Request](https://help.github.com/articles/using-pull-requests) or please initiate a discussion via a new Issue (type `c` after switching focus to the [Issues](https://github.com/jeffbicca/jpa-queryfier/issues) tab).
+I don't consider myself an amazing coder and I know that this work is a very early work in progress. So if you have increments, corrections, polishments, criticism, sugestions, method renaming, refactoring, documentation or whatever kind of contributions, please submit them via a [Pull Request](https://help.github.com/articles/using-pull-requests) or please initiate a discussion via a new Issue (type `c` after switching focus to the [Issues](https://github.com/jeffbicca/jpa-queryfier/issues) tab).
