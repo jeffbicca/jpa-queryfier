@@ -21,10 +21,6 @@ public class QueryParameter {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Object getValue() {
 		return value;
 	}

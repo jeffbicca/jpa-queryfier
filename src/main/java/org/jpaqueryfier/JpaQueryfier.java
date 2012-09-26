@@ -1,5 +1,6 @@
 package org.jpaqueryfier;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,7 +12,7 @@ import javax.persistence.Query;
 
 public class JpaQueryfier {
 
-	private static final String PARAMETER_WITH_CLAUSE_REGEX = "(where|WHERE|and|AND|or|OR) [a-zA-Z0-9_]* = :([a-zA-Z][a-zA-Z0-9_]*)";
+	private static final String PARAMETER_WITH_CLAUSE_REGEX = "(where|WHERE|and|AND|or|OR) [a-zA-Z0-9_]* (=|is|IS) :([a-zA-Z][a-zA-Z0-9_]*)";
 	private static final String PARAMETER_REGEX = ":([a-zA-Z][a-zA-Z0-9_]*)";
 
 	@Inject
@@ -46,6 +47,9 @@ public class JpaQueryfier {
 	}
 
 	public JpaQueryfier with(Object value) {
+		if (value instanceof QueryParameter)
+			return withQueryParameter((QueryParameter) value);
+
 		for (QueryParameter parameter : parameters)
 			if (parameter.valueIsNull() && parameter.isNotAlreadyAppended()) {
 				parameter.setValue(value);
@@ -55,8 +59,22 @@ public class JpaQueryfier {
 		return this;
 	}
 
+	public JpaQueryfier withQueryParameter(QueryParameter queryParameter) {
+		removeIfAlreadyAdded(queryParameter);
+		parameters.add(queryParameter);
+		queryParameter.append();
+		return this;
+	}
+
 	public List<QueryParameter> getParameters() {
 		return parameters;
+	}
+
+	public QueryParameter getParameter(String name) {
+		for (QueryParameter parameter : parameters)
+			if (name.equals(parameter.getName()))
+				return parameter;
+		return new QueryParameter(null, null);
 	}
 
 	public String getSql() {
@@ -64,12 +82,18 @@ public class JpaQueryfier {
 	}
 
 	private void fillParametersFromSql() {
-		if (!parameters.isEmpty())
-			return;
-
 		Matcher m = Pattern.compile(PARAMETER_REGEX).matcher(sql);
 		while (m.find())
 			parameters.add(new QueryParameter(m.group().replace(":", ""), null));
+	}
+
+	private void removeIfAlreadyAdded(QueryParameter paramToAdd) {
+		Iterator<QueryParameter> iParam = parameters.iterator();
+		while (iParam.hasNext()) {
+			QueryParameter parameter = iParam.next();
+			if (parameter.getName().equals(paramToAdd.getName()))
+				iParam.remove();
+		}
 	}
 
 	private void removeNullParametersFromSql() {
@@ -80,7 +104,10 @@ public class JpaQueryfier {
 		boolean whereRemoved = false;
 		while (m.find()) {
 			String parameterWithClause = m.group();
-			if (doesNotContainValue(getParameterNameFrom(parameterWithClause))) {
+			String parameterName = getParameterNameFrom(parameterWithClause);
+			QueryParameter parameter = getParameter(parameterName);
+
+			if (parameter.valueIsNull() && !parameter.acceptsNull()) {
 				sql = sql.replace(parameterWithClause, "");
 				if (parameterWithClause.contains("WHERE") || parameterWithClause.contains("where"))
 					whereRemoved = true;
@@ -90,18 +117,11 @@ public class JpaQueryfier {
 		sql = sql.trim();
 	}
 
-	private boolean doesNotContainValue(String parameterName) {
-		for (QueryParameter parameter : parameters)
-			if (parameterName.equals(parameter.getName()))
-				return parameter.getValue() == null;
-		return false;
-	}
-
 	private String getParameterNameFrom(String parameterWithClause) {
 		Matcher m = Pattern.compile(PARAMETER_REGEX).matcher(parameterWithClause);
 		while (m.find())
 			return m.group().replace(":", "");
-		return null;
+		return "";
 	}
 
 }

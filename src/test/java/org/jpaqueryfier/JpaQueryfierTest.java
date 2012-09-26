@@ -63,6 +63,20 @@ public class JpaQueryfierTest {
 	}
 
 	@Test
+	public void shouldNotAppendMoreThanOneParameterWithSameName() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT * FROM table WHERE column = :column";
+
+		QueryParameter queryParameter = new QueryParameter("column", null, true);
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(queryParameter).with(queryParameter);
+		queryfier.queryfy();
+
+		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE column = :column");
+		assertThat(queryfier.getParameters()).isNotEmpty();
+		assertThat(queryfier.getParameters()).hasSize(1);
+	}
+
+	@Test
 	public void shouldNotRemoveParametersFromSqlQueryWhenAllParametersAreNullAndIsSpecifiedToAllowNulls() {
 		doReturn(query).when(em).createQuery(anyString());
 		String sql = "SELECT * FROM table WHERE column = :column AND column2 = :column2";
@@ -120,6 +134,36 @@ public class JpaQueryfierTest {
 	}
 
 	@Test
+	public void shouldAppendNullableParameterIntoSqlQuery() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT * FROM table WHERE column IS :column";
+
+		QueryParameter queryParameter = new QueryParameter("column", null, true);
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(queryParameter);
+		queryfier.queryfy();
+
+		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE column IS :column");
+		assertThat(queryfier.getParameters()).isNotEmpty();
+		assertThat(queryfier.getParameters()).hasSize(1);
+		assertThat(queryfier.getParameters().get(0)).isEqualsToByComparingFields(queryParameter);
+	}
+
+	@Test
+	public void shouldRemoveNotNullableParameterIntoSqlQuery() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT * FROM table WHERE column IS :column";
+
+		QueryParameter queryParameter = new QueryParameter("column", null);
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(queryParameter);
+		queryfier.queryfy();
+
+		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table");
+		assertThat(queryfier.getParameters()).isNotEmpty();
+		assertThat(queryfier.getParameters()).hasSize(1);
+		assertThat(queryfier.getParameters().get(0)).isEqualsToByComparingFields(queryParameter);
+	}
+
+	@Test
 	public void shouldAppendParametersIntoRealQuery() {
 		doReturn(query).when(em).createQuery(anyString());
 		String sql = "SELECT ua_cd,replace(ua_nm,'RFB','') FROM uas_srf,"
@@ -138,7 +182,7 @@ public class JpaQueryfierTest {
 	}
 
 	@Test
-	public void shouldRemoveAtividadeNullFromRealQuery() {
+	public void shouldRemoveNullParameterFromRealQuery() {
 		doReturn(query).when(em).createQuery(anyString());
 		String sql = "SELECT ua_cd,replace(ua_nm,'RFB','') FROM uas_srf,"
 				+ "  (SELECT ygua_ua_cd, max(ygua_dt_max) dt_max FROM v_gerencial_uas "
