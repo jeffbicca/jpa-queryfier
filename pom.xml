@@ -11,7 +11,7 @@
 	<packaging>jar</packaging>
 
 	<name>JPA Queryfier</name>
-	<description>A simple lib for append parameters to JPQL/SQL queries in a simple fashion.</description>
+	<description>A simple lib to create and append parameters into JPQL/SQL Query objects in a simplified fashion.</description>
 	<url>http://github.com/jeffbicca/jpa-queryfier</url>
 
 	<licenses>
