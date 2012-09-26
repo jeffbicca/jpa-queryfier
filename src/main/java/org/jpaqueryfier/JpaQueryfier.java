@@ -36,8 +36,15 @@ public class JpaQueryfier {
 	public Query queryfy() {
 		removeNullParametersFromSql();
 		Query query = em.createQuery(sql);
-		for (QueryParameter parameter : parameters)
-			query.setParameter(parameter.getName(), parameter.getValue());
+		setParametersFor(query);
+
+		return query;
+	}
+
+	public Query queryfyNative() {
+		removeNullParametersFromSql();
+		Query query = em.createNativeQuery(sql);
+		setParametersFor(query);
 
 		return query;
 	}
@@ -80,6 +87,11 @@ public class JpaQueryfier {
 
 	public String getSql() {
 		return sql;
+	}
+
+	private void setParametersFor(Query query) {
+		for (QueryParameter parameter : parameters)
+			query.setParameter(parameter.getName(), parameter.getValue());
 	}
 
 	private void fillParametersFromSql() {

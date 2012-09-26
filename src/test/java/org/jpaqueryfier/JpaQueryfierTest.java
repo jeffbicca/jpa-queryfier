@@ -199,4 +199,12 @@ public class JpaQueryfierTest {
 		assertThat(queryfier.getSql()).isNotEqualTo(sql);
 	}
 
+	@Test
+	public void shouldReturnANativeQueryObjectWithNoParameters() {
+		String sql = "SELECT * FROM table";
+		doReturn(query).when(em).createNativeQuery(sql);
+
+		assertThat(new JpaQueryfier(sql, em).queryfyNative()).isNotNull();
+	}
+
 }
