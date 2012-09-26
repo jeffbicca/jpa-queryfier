@@ -21,6 +21,7 @@ public class JpaQueryfier {
 	private String sql;
 	private List<QueryParameter> parameters = new LinkedList<QueryParameter>();
 	private boolean allowNulls = false;
+	private boolean isWhereRemoved = false;
 
 	public JpaQueryfier(String sql) {
 		this.sql = sql;
@@ -101,20 +102,21 @@ public class JpaQueryfier {
 			return;
 
 		Matcher m = Pattern.compile(PARAMETER_WITH_CLAUSE_REGEX).matcher(sql);
-		boolean whereRemoved = false;
 		while (m.find()) {
 			String parameterWithClause = m.group();
-			String parameterName = getParameterNameFrom(parameterWithClause);
-			QueryParameter parameter = getParameter(parameterName);
-
-			if (parameter.valueIsNull() && !parameter.acceptsNull()) {
-				sql = sql.replace(parameterWithClause, "");
-				if (parameterWithClause.contains("WHERE") || parameterWithClause.contains("where"))
-					whereRemoved = true;
-			} else if (whereRemoved)
-				sql = sql.replaceFirst("and|AND|or|OR", "WHERE");
+			removeParameterIfIsNullAndDontAcceptNulls(parameterWithClause,
+					getParameter(getParameterNameFrom(parameterWithClause)));
 		}
 		sql = sql.trim();
+	}
+
+	private void removeParameterIfIsNullAndDontAcceptNulls(String parameterWithClause, QueryParameter parameter) {
+		if (parameter.valueIsNull() && !parameter.acceptsNull()) {
+			sql = sql.replace(parameterWithClause, "");
+			if (parameterWithClause.contains("WHERE") || parameterWithClause.contains("where"))
+				isWhereRemoved = true;
+		} else if (isWhereRemoved)
+			sql = sql.replaceFirst("and|AND|or|OR", "WHERE");
 	}
 
 	private String getParameterNameFrom(String parameterWithClause) {
