@@ -10,10 +10,25 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name></name>
-	<description></description>
-	<url></url>
+	<name>JPA Queryfier</name>
+	<description>A simple lib for append parameters to JPQL/SQL queries in a simple fashion.</description>
+	<url>http://github.com/jeffbicca/jpa-queryfier</url>
 
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>jeffbicca</id>
+			<name>Jefferson Bicca</name>
+			<email>jefferson.rs@gmail.com</email>
+		</developer>
+	</developers>
 
 	<dependencies>
 		<dependency>
@@ -55,5 +70,9 @@
 		</dependency>
 
 	</dependencies>
+
+	<scm>
+		<url>http://github.com/jeffbicca</url>
+	</scm>
 
 </project>
