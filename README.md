@@ -16,9 +16,9 @@ But write these queries are boring (and looks dirty too). To create a JPA Query 
 But the code starts getting worse (and dirtier) if some of the parameters are optional and have a null value, as you MUST NOT add them to the Query object. In this case, it is needed:
 
 1. Check if the parameter value is not null to append the "String part" of the query that uses this parameter;
-2. Check *(again!)* if the parameter value is not null to bind the value to the correspondent parameter.
+2. Check **(again!)** if the parameter value is not null to bind the value to the correspondent parameter.
 
-Have you got why I've wrote *(again!)*? Because to be able to bind the values, you must create the Query object first...
+Have you got why I've wrote **(again!)**? Because to be able to bind the values, you must create the Query object first...
 
 As I was looking for something very simple and which would not add any additional dependencies into the project I am working and that could simplify this task, I've decided to create this "little monster".
 
@@ -30,16 +30,19 @@ String sql = "SELECT u FROM users u WHERE u.name = :name AND u.age >= :minAge AN
 
 With JPA Queryfier you could easly do in a single liner:
 
+```java
 //...
 @Inject EntityManager em;
 
 public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) {
    return new JpaQueryfier(sql, em).with(name).and(minimumAge).and(maximumAge).queryfy().getResultList();
 }
+```
 
 JpaQueryfier will use by convention the position of the parameter. It encapsulates the key/value into a QueryParameter object to later append it to the query object.
 Optionally, you can specify and create manually the QueryParameter object too:
 
+```java
 //...
 @Inject EntityManager em;
 
@@ -49,10 +52,12 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
                                     .and(new QueryParameter("maxAge", maximumAge))
                .queryfy().getResultList();
 }
+```
 
 
 Now in plain Java, you would normally have to do something like this...
 
+```java
 //...
 @Inject EntityManager em;
 
@@ -76,13 +81,14 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
 
    return query.getResultList();
 }
+```
 
 TO DO and limitations
 ---------------------------------------
 * For now, a little bit more complex clauses will not get removed (i.e.: the AND in a BETWEEN clause). A few increments into the PARAMETER_WITH_CLAUSE_REGEX and removeNullParametersFromSql method should be done for this to get able to work. I've addeed the test case for this situation. But for now it is annotated with @Ignore;
 * Do an automatic Inject of the EntityManager instead of needing to pass it into parameter;
-* Instead of using REGEXes to match the SQL String, use a decent grammar/BNF.
+* Instead of using REGEXes to match the SQL String, use a proper grammar/BNF.
 
 Help Improve and Get Involved
 ---------------------------------------
-I don't consider myself an amazing coder and I know that this work is a very early work in progress. So if you have increments, corrections, polishments, criticism, sugestions, method renaming, refactoring, documentation or whatever kind of contributions, please submit them via a [Pull Request](https://help.github.com/articles/using-pull-requests) or please initiate a discussion via a new Issue (type `c` after switching focus to the [Issues](https://github.com/jeffbicca/jpa-queryfier/issues) tab).
+I don't consider myself an amazing coder and I know that this work is a very early work in progress. So if you have increments, corrections, polishments, criticisms, sugestions, method renaming, refactoring, documentation or whatever kind of contributions, please submit them via a [Pull Request](https://help.github.com/articles/using-pull-requests) or please initiate a discussion via a new Issue (type `c` after switching focus to the [Issues](https://github.com/jeffbicca/jpa-queryfier/issues) tab).
