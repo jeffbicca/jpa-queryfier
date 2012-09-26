@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -54,7 +55,7 @@ public class JpaQueryfierTest {
 	@Test
 	public void shouldAppendParametersIntoQuery() {
 		String sql = "SELECT * FROM table WHERE column = :column AND column2 = :column2";
-		List<QueryParameter> parameters = new JpaQueryfier(sql).with("123").with("456").getParameters();
+		List<QueryParameter> parameters = new JpaQueryfier(sql).with("123").and("456").getParameters();
 
 		assertThat(parameters).isNotEmpty();
 		assertThat(parameters).hasSize(2);
@@ -63,12 +64,27 @@ public class JpaQueryfierTest {
 	}
 
 	@Test
+	public void shouldAppendBetweenParametersIntoQuery() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT * FROM table WHERE name = :name AND age BETWEEN :minAge AND :maxAge";
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("Paul").and(18).and(40);
+		List<QueryParameter> parameters = queryfier.getParameters();
+		queryfier.queryfy();
+
+		assertThat(parameters).isNotEmpty();
+		assertThat(parameters).hasSize(3);
+		assertThat(parameters.get(0)).isEqualsToByComparingFields(new QueryParameter("name", "Paul"));
+		assertThat(parameters.get(1)).isEqualsToByComparingFields(new QueryParameter("minAge", 18));
+		assertThat(parameters.get(2)).isEqualsToByComparingFields(new QueryParameter("maxAge", 40));
+	}
+
+	@Test
 	public void shouldNotAppendMoreThanOneParameterWithSameName() {
 		doReturn(query).when(em).createQuery(anyString());
 		String sql = "SELECT * FROM table WHERE column = :column";
 
 		QueryParameter queryParameter = new QueryParameter("column", null, true);
-		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(queryParameter).with(queryParameter);
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(queryParameter).and(queryParameter);
 		queryfier.queryfy();
 
 		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE column = :column");
@@ -80,7 +96,7 @@ public class JpaQueryfierTest {
 	public void shouldNotRemoveParametersFromSqlQueryWhenAllParametersAreNullAndIsSpecifiedToAllowNulls() {
 		doReturn(query).when(em).createQuery(anyString());
 		String sql = "SELECT * FROM table WHERE column = :column AND column2 = :column2";
-		JpaQueryfier queryfier = new JpaQueryfier(sql, em).allowingNulls().with(null).with(null);
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).allowingNulls().with(null).and(null);
 		queryfier.queryfy();
 
 		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE column = :column AND column2 = :column2");
@@ -97,10 +113,39 @@ public class JpaQueryfierTest {
 	}
 
 	@Test
+	@Ignore
+	public void shouldRemoveNullParametersBetweenParametersIntoQuery() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT * FROM table WHERE name = :name AND age BETWEEN :minAge AND :maxAge";
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("Paul");
+		List<QueryParameter> parameters = queryfier.getParameters();
+		queryfier.queryfy();
+
+		assertThat(parameters).isNotEmpty();
+		assertThat(parameters).hasSize(3);
+		assertThat(parameters.get(0)).isEqualsToByComparingFields(new QueryParameter("name", "Paul"));
+		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE name = :name");
+	}
+
+	@Test
+	public void shouldRemoveNullParametersBetweenUsingLessThanAndGreaterThanParametersIntoQuery() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT * FROM table WHERE name = :name AND age >= :minAge AND age <= :maxAge";
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("Paul");
+		List<QueryParameter> parameters = queryfier.getParameters();
+		queryfier.queryfy();
+
+		assertThat(parameters).isNotEmpty();
+		assertThat(parameters).hasSize(3);
+		assertThat(parameters.get(0)).isEqualsToByComparingFields(new QueryParameter("name", "Paul"));
+		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE name = :name");
+	}
+
+	@Test
 	public void shouldRemoveAllNullParametersFromSqlQuery() {
 		doReturn(query).when(em).createQuery(anyString());
 		String sql = "SELECT * FROM table WHERE column = :column AND column2 = :column2";
-		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(null).with(null);
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(null).and(null);
 		queryfier.queryfy();
 
 		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table");
@@ -124,7 +169,7 @@ public class JpaQueryfierTest {
 	public void shouldRemoveFirstNullParameterFromSqlQuery() {
 		doReturn(query).when(em).createQuery(anyString());
 		String sql = "SELECT * FROM table WHERE column = :column AND column2 = :column2";
-		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(null).with("test");
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with(null).and("test");
 		queryfier.queryfy();
 
 		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table  WHERE column2 = :column2");
@@ -174,8 +219,8 @@ public class JpaQueryfierTest {
 				+ "  AND (ua_nm_mnemonico IN ('DRF','SRRF','DEINF','DEAIN','DEMAC','DEFIS'))"
 				+ "  AND (ua_dt_extincao IS NULL OR :dataInicial <= dt_max) AND ua_b_in_delecao_logica = 'N' "
 				+ "ORDER BY 1";
-		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("1010000").with("1019999").with(1L)
-				.with(Calendar.getInstance());
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("1010000").and("1019999").and(1L)
+				.and(Calendar.getInstance());
 		queryfier.queryfy();
 
 		assertThat(queryfier.getSql()).isEqualTo(sql);
@@ -192,8 +237,8 @@ public class JpaQueryfierTest {
 				+ "  AND (ua_nm_mnemonico IN ('DRF','SRRF','DEINF','DEAIN','DEMAC','DEFIS'))"
 				+ "  AND (ua_dt_extincao IS NULL OR :dataInicial <= dt_max) AND ua_b_in_delecao_logica = 'N' "
 				+ "ORDER BY 1";
-		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("1010000").with("1019999").with(null)
-				.with(Calendar.getInstance());
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("1010000").and("1019999").and(null)
+				.and(Calendar.getInstance());
 		queryfier.queryfy();
 
 		assertThat(queryfier.getSql()).isNotEqualTo(sql);

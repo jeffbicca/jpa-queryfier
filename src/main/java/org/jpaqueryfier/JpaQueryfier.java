@@ -6,16 +6,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 public class JpaQueryfier {
 
-	private static final String PARAMETER_WITH_CLAUSE_REGEX = "(where|WHERE|and|AND|or|OR) [a-zA-Z0-9_]* (=|is|IS) :([a-zA-Z][a-zA-Z0-9_]*)";
+	private static final String PARAMETER_WITH_CLAUSE_REGEX = "(where|WHERE|and|AND|or|OR) [a-zA-Z0-9_]* (=|<|>|<=|>=|is|IS|between|BETWEEN|like|LIKE) :([a-zA-Z][a-zA-Z0-9_]*)";
 	private static final String PARAMETER_REGEX = ":([a-zA-Z][a-zA-Z0-9_]*)";
 
-	@Inject
 	private EntityManager em;
 
 	private String sql;
@@ -72,6 +70,10 @@ public class JpaQueryfier {
 		parameters.add(queryParameter);
 		queryParameter.append();
 		return this;
+	}
+
+	public JpaQueryfier and(Object value) {
+		return with(value);
 	}
 
 	public List<QueryParameter> getParameters() {
