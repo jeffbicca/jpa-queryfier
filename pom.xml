@@ -5,14 +5,20 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.jpaqueryfier</groupId>
+	<groupId>net.sf.jpa-queryfier</groupId>
 	<artifactId>jpa-queryfier</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>JPA Queryfier</name>
 	<description>A simple lib to create and append parameters into JPQL/SQL Query objects in a simplified fashion.</description>
 	<url>http://github.com/jeffbicca/jpa-queryfier</url>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<licenses>
 		<license>
@@ -68,11 +74,12 @@
 			<version>2.0M8</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<scm>
-		<url>http://github.com/jeffbicca</url>
+		<connection>scm:git:git@github.com:jeffbicca/jpa-queryfier.git</connection>
+		<developerConnection>scm:git:git@github.com:jeffbicca/jpa-queryfier.git</developerConnection>
+		<url>git@github.com:jeffbicca/jpa-queryfier.git</url>
 	</scm>
 
 </project>
