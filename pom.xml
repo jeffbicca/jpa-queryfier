@@ -5,9 +5,9 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.jpaqueryfier</groupId>
+	<groupId>net.sf.jpa-queryfier</groupId>
 	<artifactId>jpa-queryfier</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
 	<name>JPA Queryfier</name>
