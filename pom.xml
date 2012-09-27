@@ -7,7 +7,7 @@
 
 	<groupId>net.sf.jpa-queryfier</groupId>
 	<artifactId>jpa-queryfier</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>JPA Queryfier</name>
@@ -81,5 +81,31 @@
 		<developerConnection>scm:git:git@github.com:jeffbicca/jpa-queryfier.git</developerConnection>
 		<url>git@github.com:jeffbicca/jpa-queryfier.git</url>
 	</scm>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
