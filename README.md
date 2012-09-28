@@ -24,7 +24,16 @@ As I was looking for something very simple and which would not add any additiona
 
 Usage
 ---------------------------------------
-Imagine yourself that you have to develop a method at your Repository class that list "all" users and consider that all these parameters are optional:
+Supposing that you are using Maven, add this following dependency into your pom.xml file:
+```xml
+   <dependency>
+      <groupId>net.sf.jpa-queryfier</groupId>
+      <artifactId>jpa-queryfier</artifactId>
+      <version>0.0.1</version>
+   </dependency>
+```
+
+Then imagine yourself that you have to develop a method at your Repository class that list "all" users and consider that all these parameters are optional:
 
 String sql = "SELECT u FROM users u WHERE u.name = :name AND u.age >= :minAge AND u.age <= :maxAge"
 
