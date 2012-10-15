@@ -25,8 +25,9 @@ public class QueryParameter {
 		return value;
 	}
 
-	public void setValue(Object value) {
+	public void setValueAndAppend(Object value) {
 		this.value = value;
+		append();
 	}
 
 	public boolean isNotAlreadyAppended() {

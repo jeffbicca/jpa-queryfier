@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -113,10 +112,9 @@ public class JpaQueryfierTest {
 	}
 
 	@Test
-	@Ignore
 	public void shouldRemoveNullParametersBetweenParametersIntoQuery() {
 		doReturn(query).when(em).createQuery(anyString());
-		String sql = "SELECT * FROM table WHERE name = :name AND age BETWEEN :minAge AND :maxAge";
+		String sql = "SELECT * FROM table WHERE name=:name AND age BETWEEN :minAge AND :maxAge";
 		JpaQueryfier queryfier = new JpaQueryfier(sql, em).with("Paul");
 		List<QueryParameter> parameters = queryfier.getParameters();
 		queryfier.queryfy();
@@ -124,7 +122,20 @@ public class JpaQueryfierTest {
 		assertThat(parameters).isNotEmpty();
 		assertThat(parameters).hasSize(3);
 		assertThat(parameters.get(0)).isEqualsToByComparingFields(new QueryParameter("name", "Paul"));
-		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE name = :name");
+		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table WHERE name=:name");
+	}
+
+	@Test
+	public void shouldRemoveEmptyBetweenClause() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT * FROM table WHERE age BETWEEN :minAge AND :maxAge";
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em);
+		List<QueryParameter> parameters = queryfier.getParameters();
+		queryfier.queryfy();
+
+		assertThat(parameters).isNotEmpty();
+		assertThat(parameters).hasSize(2);
+		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table");
 	}
 
 	@Test

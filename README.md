@@ -1,6 +1,6 @@
 JPA Queryfier
 =======================================
-This is a library (more precisely, a pair of very simple classes) aimed to simplify the creation of JPA's Query objects which have these following characteristics in particular:
+This is a library (more precisely, a group of 5 classes) aimed to simplify the creation of JPA's Query objects which have these following characteristics in particular:
 
 * Be a SELECT query written in JPQL or SQL;
 * Have multiple parameters (optionals or not) in the SELECT query.
@@ -29,7 +29,7 @@ Supposing that you are using Maven, add this following dependency into your pom.
    <dependency>
       <groupId>net.sf.jpa-queryfier</groupId>
       <artifactId>jpa-queryfier</artifactId>
-      <version>0.0.1</version>
+      <version>0.1.0</version>
    </dependency>
 ```
 
@@ -92,11 +92,18 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
 }
 ```
 
+CHANGE LOG
+---------------------------------------
+**0.1.0**
+- Added support for BETWEEN clause;
+- BIG refactorings: moved and changed a few methods into JpaQueryfier class and created the classes Parameters, SQLGrammar, SQLMicroprocessor to improve readability, code organization and to improve the SQL nullable parameters processment.
+
+**0.0.1**
+- Initial release.
+
 TO DO and limitations
 ---------------------------------------
-* For now, a little bit more complex clauses will not get removed (i.e.: the AND in a BETWEEN clause). A few increments into the PARAMETER_WITH_CLAUSE_REGEX and removeNullParametersFromSql method should be done for this to get able to work. I've addeed the test case for this situation. But for now it is annotated with @Ignore;
-* Do an automatic Inject of the EntityManager instead of needing to pass it into parameter;
-* Instead of using REGEXes to match the SQL String, use a proper grammar/BNF.
+* More testing, use cases and users for improvements :)
 
 Help Improve and Get Involved
 ---------------------------------------
