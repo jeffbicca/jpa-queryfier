@@ -95,7 +95,7 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
 CHANGE LOG
 ---------------------------------------
 **0.1.0**
-- Added support for BETWEEN clause;
+- Added support for BETWEEN;
 - BIG refactorings: moved and changed a few methods into JpaQueryfier class and created the classes Parameters, SQLGrammar, SQLMicroprocessor to improve readability, code organization and to improve the SQL nullable parameters processment.
 
 **0.0.1**
