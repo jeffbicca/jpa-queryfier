@@ -52,6 +52,13 @@ public class JpaQueryfierTest {
 	}
 
 	@Test
+	public void shouldExtractParametersFromJPAQLWithParameters() {
+		String sql = "SELECT t FROM table t WHERE t.column = :column AND t.column2 = :column2";
+
+		assertThat(new JpaQueryfier(sql).getParameters()).isNotEmpty();
+	}
+
+	@Test
 	public void shouldAppendParametersIntoQuery() {
 		String sql = "SELECT * FROM table WHERE column = :column AND column2 = :column2";
 		List<QueryParameter> parameters = new JpaQueryfier(sql).with("123").and("456").getParameters();
@@ -109,6 +116,16 @@ public class JpaQueryfierTest {
 		queryfier.queryfy();
 
 		assertThat(queryfier.getSql()).isEqualTo("SELECT * FROM table");
+	}
+
+	@Test
+	public void shouldRemoveAllParametersFromJpaQLQueryWhenAllParametersAreNull() {
+		doReturn(query).when(em).createQuery(anyString());
+		String sql = "SELECT t FROM table t WHERE t.column = :column AND t.column2 = :column2";
+		JpaQueryfier queryfier = new JpaQueryfier(sql, em);
+		queryfier.queryfy();
+
+		assertThat(queryfier.getSql()).isEqualTo("SELECT t FROM table t");
 	}
 
 	@Test

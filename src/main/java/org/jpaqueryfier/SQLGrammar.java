@@ -7,7 +7,7 @@ class SQLGrammar {
 	static final String SPACE = " ";
 	static final String OPTIONAL_SPACE = "\\s*";
 	static final String CLAUSE = "(where|WHERE|and|AND|or|OR)";
-	static final String PARAMETER_NAME = "[a-zA-Z0-9_]+";
+	static final String PARAMETER_NAME = "[a-zA-Z0-9_.]+";
 	static final String OPERATOR = "(=|<|>|<=|>=|is|IS|between|BETWEEN|like|LIKE)";
 	static final String PARAMETER_VALUE = ":([a-zA-Z][a-zA-Z0-9_]+)";
 	static final String PARAMETER_WITH_CLAUSE = CLAUSE + SPACE + PARAMETER_NAME + OPTIONAL_SPACE + OPERATOR

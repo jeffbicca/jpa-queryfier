@@ -29,7 +29,7 @@ Supposing that you are using Maven, add this following dependency into your pom.
    <dependency>
       <groupId>net.sf.jpa-queryfier</groupId>
       <artifactId>jpa-queryfier</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.1</version>
    </dependency>
 ```
 
@@ -94,6 +94,9 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
 
 CHANGE LOG
 ---------------------------------------
+**0.1.1**
+- Corrected a bug in the regex used into the method removeNullParameters from SQLMicroprocessor, to be able to accept parameters with a dot ("."). i.e.: "SELECT t FROM table t WHERE t.name = :name".
+
 **0.1.0**
 - Added support for BETWEEN;
 - BIG refactorings: moved and changed a few methods into JpaQueryfier class and created the classes Parameters, SQLGrammar, SQLMicroprocessor to improve readability, code organization and to improve the SQL nullable parameters processment.
