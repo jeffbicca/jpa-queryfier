@@ -29,7 +29,7 @@ Supposing that you are using Maven, add this following dependency into your pom.
    <dependency>
       <groupId>net.sf.jpa-queryfier</groupId>
       <artifactId>jpa-queryfier</artifactId>
-      <version>0.1.1</version>
+      <version>0.1.2</version>
    </dependency>
 ```
 
