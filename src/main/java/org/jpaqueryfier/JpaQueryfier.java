@@ -78,7 +78,8 @@ public class JpaQueryfier {
 
 	private Query definedParametersFor(Query query) {
 		for (QueryParameter parameter : parameters.get())
-			query.setParameter(parameter.getName(), parameter.getValue());
+			if (parameter.getValue() != null)
+				query.setParameter(parameter.getName(), parameter.getValue());
 		return query;
 	}
 

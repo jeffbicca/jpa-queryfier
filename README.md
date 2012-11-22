@@ -94,6 +94,9 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
 
 CHANGE LOG
 ---------------------------------------
+**0.1.2**
+- Corrected a bug into method definedParametersFor from JpaQueryfier class. In some JVM, adding a null parameter into a Query object throws NullPointerException while in others not.
+
 **0.1.1**
 - Corrected a bug in the regex used into the method removeNullParameters from SQLMicroprocessor, to be able to accept parameters with a dot ("."). i.e.: "SELECT t FROM table t WHERE t.name = :name".
 
