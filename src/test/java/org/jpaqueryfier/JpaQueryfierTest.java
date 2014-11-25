@@ -287,4 +287,12 @@ public class JpaQueryfierTest {
 		assertThat(new JpaQueryfier(sql, em).queryfyNative(Object.class)).isNotNull();
 	}
 	
+	@Test
+	public void shouldNotReturnANativeQueryObjectInAnObject() {
+		String sql = "SELECT * FROM table";
+		doReturn(query).when(em).createNativeQuery(sql);
+		
+		assertThat(new JpaQueryfier(sql, em).queryfyNative(null)).isNotNull();
+	}
+	
 }

@@ -37,6 +37,9 @@ public class JpaQueryfier {
 	}
 	
 	public Query queryfyNative(Class<?> resultClass) {
+		if(resultClass == null)
+			return queryfyNative();
+		
 		sql = new SQLMicroprocessor(sql, parameters, allowNulls).removeNullParameters();
 		Query query = em.createNativeQuery(sql, resultClass);
 		

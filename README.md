@@ -29,7 +29,7 @@ Supposing that you are using Maven, add this following dependency into your pom.
    <dependency>
       <groupId>net.sf.jpa-queryfier</groupId>
       <artifactId>jpa-queryfier</artifactId>
-      <version>0.1.2</version>
+      <version>0.1.4</version>
    </dependency>
 ```
 
@@ -94,6 +94,9 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
 
 CHANGE LOG
 ---------------------------------------
+**0.1.4**
+- Enabled to pass null as argument to the new method of native query that takes a result class. So it will delegate the call to the queryfy native method without argument. 
+
 **0.1.3**
 - Added support to define a result class for native query.
 
