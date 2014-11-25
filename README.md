@@ -94,6 +94,9 @@ public List<User> findAllUsersWith(String name, int minimumAge, int maximumAge) 
 
 CHANGE LOG
 ---------------------------------------
+**0.1.3**
+- Added support to define a result class for native query.
+
 **0.1.2**
 - Corrected a bug into method definedParametersFor from JpaQueryfier class. In some JVM, adding a null parameter into a Query object throws NullPointerException while in others not.
 
